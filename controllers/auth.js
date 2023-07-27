@@ -15,6 +15,10 @@ export const register = async (req, res) => {
             location,
             occupation
         } = req.body
+        const user = await User.findOne({ email: email })
+        if (user) {
+            return res.status(400).json({ msg: "User Already Exit with this Email" })
+        }
         const salt = await bcrypt.genSalt();
         const passwordHash = await bcrypt.hash(password, salt)
 
@@ -31,7 +35,8 @@ export const register = async (req, res) => {
             impressions: Math.floor(Math.random() * 10000)
         })
         const saveUser = await newUser.save()
-        res.status(201).json(saveUser)
+        const token = jwt.sign({ id: saveUser._id }, process.env.JWT_SECRET)
+        res.status(201).json({ token, saveUser })
     } catch (err) {
         res.status(500).json({ error: err.message })
     }
@@ -42,7 +47,7 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body
-        console.log(email,password);
+        console.log(email, password);
         const user = await User.findOne({ email: email })
         if (!user) {
             return res.status(400).json({ msg: "User Not Found" })

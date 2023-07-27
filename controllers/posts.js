@@ -4,10 +4,10 @@ import User from '../models/User.js';
 //create
 export const createPost = async (req, res) => {
     try {
-        const { userID, description, picturePath } = req.body;
-        const user = await User.findById(userID)
+        const { userId, description, picturePath } = req.body;
+        const user = await User.findById(userId)
         const newPost = new Post({
-            userID,
+            userId,
             firstName: user.firstName,
             lastName: user.lastName,
             location: user.location,
@@ -40,7 +40,7 @@ export const getFeedPosts = async (req, res) => {
 export const getUserPosts = async (req, res) => {
     try {
         const { userId } = req.params;
-        const userPosts = await Post.findById({ userID })
+        const userPosts = await Post.find({ userId })
         res.status(200).json(userPosts)
     } catch (err) {
         res.status(403).json({ error: err.message })
@@ -51,7 +51,7 @@ export const likePost = async(req,res)=>{
     try {
         const {id} = req.params;
         const {userId} = req.body;
-        const post = await Post.findById({id})
+        const post = await Post.findById(id)
         const isLiked = post.likes.get(userId)
 
         if(isLiked){
