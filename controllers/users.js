@@ -1,5 +1,14 @@
 import User from "../models/User.js";
 
+export const self = async (req, res) => {
+    try {
+        const { firstName, lastName, email } = req.session
+        res.status(200).json({ user: { firstName, lastName, email } })
+    } catch (err) {
+        res.status(500).json({ error: err.message })
+    }
+}
+
 export const getUser = async (req, res) => {
     try {
         const { id } = req.params;
