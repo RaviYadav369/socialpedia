@@ -2,17 +2,19 @@ import User from "../models/User.js";
 
 export const self = async (req, res) => {
     try {
-        const { firstName, lastName, email } = req.session
-        res.status(200).json({ user: { firstName, lastName, email } })
+        const { id } = req.user;
+        const currUser = await User.findById(id)
+        // const { firstName, lastName, email } = currUser
+        // console.log(currUser);
+        res.status(200).json({ user: { ...currUser} })
     } catch (err) {
         res.status(500).json({ error: err.message })
     }
 }
 
 export const getUser = async (req, res) => {
-    try {
+    try {  
         const { id } = req.params;
-        console.log(id);
         const user = await User.findById(id)
         res.status(200).json({ user })
 
